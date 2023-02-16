@@ -1,63 +1,24 @@
 {
      "id": "{5D881D55-EBF6-257D-C334-3E7F5DB06DB3}",
-     "caption": "Switch all child status variables",
-     "form": [
-         "$options = [];",
-         "$firstVariable = false;",
-         "foreach (IPS_GetChildrenIDs($_IPS['TARGET']) as $childID) {",
-         "    $object = IPS_GetObject($childID);",
-         "    if (($object['ObjectType'] === 2) && ($object['ObjectIdent'] !== '')) {",
-         "        if (!HasAction($childID)) {",
-         "            continue;",
-         "        }",
-         "        if (!$firstVariable) {",
-         "            $firstVariable = $object;",
-         "        }",
-         "        $options[] = [",
-         "            'caption' => $object['ObjectName'],",
-         "            'value' => $object['ObjectIdent']",
-         "        ];",
-         "    }",
-         "}",
-         "return [",
-         "   [",
-         "       'type' => 'Select',",
-         "       'name' => 'IDENT',",
-         "       'caption' => 'Status Variable',",
-         "       'options' => $options,",
-         "       'value' => $firstVariable['ObjectIdent'],",
-         "       'onChange' => 'IPS_UpdateFormField(\"ACTION\", \"targetID\", IPS_GetObjectIDByIdent($IDENT, ' . $_IPS['TARGET'] . '), $id);'",
-         "   ],",
-         "   [",
-         "       'type' => 'SelectAction',",
-         "       'name' => 'ACTION',",
-         "       'caption' => 'Action',",
-         "       'targetID' => isset($_IPS['IDENT']) ? IPS_GetObjectIDByIdent($_IPS['IDENT'], $_IPS['TARGET']) : $firstVariable['ObjectID']",
-         "   ]",
-         "];"
+     "caption": "Set all child variables",
+          "form": [
+         {
+             "type": "ValidationTextBox",
+             "name": "VALUE",
+             "caption": "Value"
+         }
      ],
      "action": [
-         "$targetVariableID = IPS_GetObjectIDByIdent($_IPS['IDENT'], $_IPS['TARGET']);",
-         "$action = json_decode($_IPS['ACTION'], true);",
-         "echo IPS_RunActionWait($action['actionID'], $targetVariableID, $action['parameters']);"
-     ],
+          "foreach (IPS_GetChildrenIDs($_IPS['TARGET']) as $childID) {",
+          "    @SetValue($childID, $_IPS['VALUE']);",
+          "}"         
+               ],
      "restrictions": {
          "objectType": [ 0,1,2,3,4,5,6 ]
      },
      "locale": {
          "de": {
-             "Switch all child status variables": "Alle untergeordneten Statusvariablen schalten",
-             "Status Variable": "Statusvariable",
-             "{TARGET, object, ident IDENT}: Switch Variable": "{TARGET, object, ident IDENT}: Schalte Variable"
+             "Set all child variables": "Alle untergeordneten Variablen schalten"
          }
-     },
-     "format": "{TARGET, object, ident IDENT}: {ACTION, action, targetID TARGET ident IDENT}",
-     "readable": [
-         "$targetVariableID = IPS_GetObjectIDByIdent($_IPS['IDENT'], $_IPS['TARGET']);",
-         "$action = json_decode($_IPS['ACTION'], true);",
-         "$action['parameters']['TARGET'] = $targetVariableID;",
-         "$action['parameters']['ENVIRONMENT'] = $_IPS['ENVIRONMENT'];",
-         "$action['parameters']['PARENT'] = $_IPS['PARENT'];",
-         "echo IPS_GetActionReadableCode($action['actionID'], $action['parameters']) . \"\\n\";"
-     ]
+     }
  }
