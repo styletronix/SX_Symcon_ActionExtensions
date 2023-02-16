@@ -42,8 +42,7 @@
          "echo IPS_RunActionWait($action['actionID'], $targetVariableID, $action['parameters']);"
      ],
      "restrictions": {
-         "objectType": [ 1 ],
-         "hasActionStatusVariables": true
+         "objectType": [ 0,1,2,3,4,5,6 ]
      },
      "locale": {
          "de": {
